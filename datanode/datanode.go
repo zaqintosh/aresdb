@@ -207,7 +207,7 @@ func (d *dataNode) Open() error {
 
 	return nil
 }
-G
+
 func (d *dataNode) startSchemaWatch() {
 	if d.opts.ServerConfig().Cluster.Enable {
 		// TODO better to reuse the code direcly in controller to talk to etcd
