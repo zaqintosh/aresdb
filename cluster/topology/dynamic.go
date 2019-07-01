@@ -236,6 +236,9 @@ func validateInstances(instances []services.ServiceInstance, replicas, numShards
 			m[s.ID()] = m[s.ID()] + 1
 		}
 	}
+
+	utils.GetLogger().Infof("validateInstances, replicas: %d, numShards: %d, shards: %v", replicas, numShards, m)
+
 	s := make([]uint32, numShards)
 	for i := range s {
 		expectShard := uint32(i)
