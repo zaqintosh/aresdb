@@ -139,6 +139,7 @@ func NewDataNode(
 		metrics:              newDatanodeMetrics(scope),
 		grpcServer:           grpcServer,
 		redoLogManagerMaster: redoLogManagerMaster,
+		shardSet:             shard.NewShardSet(nil),
 	}
 	d.handlers = d.newHandlers()
 	d.bootstrapManager = NewBootstrapManager(d, opts, topo)
