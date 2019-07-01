@@ -173,8 +173,8 @@ func (d *dataNode) Open() error {
 	}
 
 	d.logger.Info("retrieve host shard set")
-	select {
-	case <-d.mapWatch.C():
+	//select {
+	//case <-d.mapWatch.C():
 		hostShardSet, ok := d.mapWatch.Get().LookupHostShardSet(d.hostID)
 		if !ok {
 			d.shardSet = shard.NewShardSet(nil)
@@ -182,8 +182,8 @@ func (d *dataNode) Open() error {
 			d.shardSet = hostShardSet.ShardSet()
 		}
 		d.AssignShardSet(d.shardSet)
-	default:
-	}
+	//default:
+	//}
 
 	d.logger.Info("host memory manager start")
 	d.memStore.GetHostMemoryManager().Start()
