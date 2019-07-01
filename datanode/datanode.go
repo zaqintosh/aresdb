@@ -181,7 +181,9 @@ func (d *dataNode) Open() error {
 		} else {
 			d.shardSet = hostShardSet.ShardSet()
 		}
-		d.AssignShardSet(d.shardSet)
+	d.logger.Info("assign shard set")
+
+	d.AssignShardSet(d.shardSet)
 	//default:
 	//}
 
@@ -478,7 +480,6 @@ func (d *dataNode) AssignShardSet(shardSet shard.ShardSet) {
 	}
 
 	// only kick off bootstrap when the first bootstrap is done during shard assignment
-	d.RLock()
 	if d.bootstraps > 0 {
 		go func() {
 			if err := d.bootstrapManager.Bootstrap(); err != nil {
