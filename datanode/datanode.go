@@ -172,20 +172,20 @@ func (d *dataNode) Open() error {
 		return utils.StackError(err, "failed to watch topology")
 	}
 
+	var shardSet shard.ShardSet
 	d.logger.Info("retrieve host shard set")
-	//select {
-	//case <-d.mapWatch.C():
+	select {
+	case <-d.mapWatch.C():
 		hostShardSet, ok := d.mapWatch.Get().LookupHostShardSet(d.hostID)
 		if !ok {
-			d.shardSet = shard.NewShardSet(nil)
+			shardSet = shard.NewShardSet(nil)
 		} else {
-			d.shardSet = hostShardSet.ShardSet()
+			shardSet = hostShardSet.ShardSet()
 		}
-	d.logger.Info("assign shard set")
-
-	d.AssignShardSet(d.shardSet)
-	//default:
-	//}
+		d.logger.Info("assign shard set")
+		d.AssignShardSet(shardSet)
+	default:
+	}
 
 	d.logger.Info("host memory manager start")
 	d.memStore.GetHostMemoryManager().Start()
