@@ -148,18 +148,22 @@ func NewDataNode(
 
 // Open data node for serving
 func (d *dataNode) Open() error {
+	d.logger.Info("datanode open")
 	d.startedAt = utils.Now()
 
 	//1. start schema watch
+	d.logger.Info("start schema watch")
 	d.startSchemaWatch()
 
 	// memstore fetch local disk schema
+	d.logger.Info("fetch schema")
 	err := d.memStore.FetchSchema()
 	if err != nil {
 		return err
 	}
 
 	// 2. start debug server
+	d.logger.Info("start debug server")
 	go d.startDebugServer()
 
 	// 3. first shard assignment
@@ -168,8 +172,9 @@ func (d *dataNode) Open() error {
 		return utils.StackError(err, "failed to watch topology")
 	}
 
-	select {
-	case <-d.mapWatch.C():
+	d.logger.Info("retrieve host shard set")
+	//select {
+	//case <-d.mapWatch.C():
 		hostShardSet, ok := d.mapWatch.Get().LookupHostShardSet(d.hostID)
 		if !ok {
 			d.shardSet = shard.NewShardSet(nil)
@@ -177,9 +182,10 @@ func (d *dataNode) Open() error {
 			d.shardSet = hostShardSet.ShardSet()
 		}
 		d.AssignShardSet(d.shardSet)
-	default:
-	}
+	//default:
+	//}
 
+	d.logger.Info("host memory manager start")
 	d.memStore.GetHostMemoryManager().Start()
 
 	// 5. start scheduler
@@ -194,6 +200,7 @@ func (d *dataNode) Open() error {
 	}
 
 	// 6. start active topology watch
+	d.logger.Info("start topology watch")
 	go d.startActiveTopologyWatch()
 	// 7. start analyzing shard availability
 	go d.startAnalyzingShardAvailability()
@@ -351,6 +358,7 @@ func (d *dataNode) ID() string {
 }
 
 func (d *dataNode) Serve() {
+	d.logger.Info("datanode serve")
 	// start advertising to the cluster
 	d.advertise()
 	// enable archiving jobs
@@ -493,6 +501,7 @@ func (d *dataNode) GetOwnedShards() []int {
 }
 
 func (d *dataNode) Bootstrap() error {
+	d.logger.Info("datanode bootstrap")
 	d.Lock()
 	d.bootstraps++
 	d.Unlock()
