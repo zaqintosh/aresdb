@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 package models
-
+// test
 // IngestionAssignment models job assignments for a subscriber
 type IngestionAssignment struct {
 	Subscriber string              `json:"subscriber"`
